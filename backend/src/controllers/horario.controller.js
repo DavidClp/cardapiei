@@ -21,7 +21,7 @@ const create = async function(req, res, next){
             throw response;
         }
 
-        next();
+        res.send(response);
     } catch (error) {
         return next(error);
     }
@@ -74,7 +74,26 @@ const findById = async function(req, res, next){
     } catch (error) {
         next(error);
     }
-    
+
+}
+
+const findByEstId = async function(req, res, next){
+    try {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            throw createError(422, {errors: errors.array()});
+        }
+        
+        const response = await horarioService.findByEstId(req.params.id);
+        if(response && response.message){
+            throw response;
+        }
+
+        res.send(response);
+    } catch (error) {
+        next(error);
+    }
+
 }
 
 const deletar = async function(req, res, next){
@@ -100,6 +119,7 @@ module.exports = {
     create,
     update,
     findAll,
+    findByEstId,
     findById,
     deletar,
 }

@@ -19,12 +19,13 @@ module.exports = (sequelize, DataTypes) => {
     cat_id: DataTypes.INTEGER,
     descricao: DataTypes.STRING,
     valor: DataTypes.DECIMAL,
-    imagem: DataTypes.STRING
+    imagem: DataTypes.STRING,
+    ativo: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Produto',
     tableName: 'produtos',
-    paranoid: true
+    paranoid: false
   });
   return Produto;
 };

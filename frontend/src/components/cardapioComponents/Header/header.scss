@@ -1,48 +1,185 @@
 @import '../../../styles/variables';
 
-.header{
+.headerCardapio2 {
     @include flexCenter(row);
     background-color: $cor-primaria;
     padding: 2rem;
     gap: 2rem;
 
-    .logo{
-       
+    .logo2 {
+        img {
+            width: 11rem;
+        }
     }
 
-    .container{
+    .container {
         @include flexCenter(column);
         gap: 1rem;
         max-width: 40%;
 
-        .icon{
+        .icon {
             font-size: 1.5rem;
         }
 
-        .nome{
+        .nome {
             font-size: 2rem;
         }
 
-        .descricao{
+        .descricao {
             font-size: 1.3rem;
         }
 
-        .localizacao{
+        .localizacao {
             display: flex;
             gap: .8rem;
-            p{
+
+            p {
                 font-size: 1.1rem;
             }
         }
 
-        .horarios{
+        .horarios {
             gap: 1rem;
-            .horario{
+
+            .horario {
                 display: flex;
                 gap: .8rem;
                 font-size: 1.1rem;
             }
         }
     }
+}
 
+.headerCardapio2 {
+    @include medium-screen {
+        @include flexCenter(column);
+
+        .container {
+            @include flexCenter(column);
+            gap: 1rem;
+            max-width: 90%;
+
+            .icon {
+                font-size: 1.5rem;
+            }
+
+            .nome {
+                font-size: 2rem;
+            }
+
+            .descricao {
+                font-size: 1.2rem;
+            }
+
+            .localizacao {
+                p {
+                    font-size: 1rem;
+                }
+            }
+
+            .horarios {
+                .horario {
+                    font-size: 1rem;
+                }
+            }
+        }
+    }
+}
+
+.headerCardapio2 {
+    @include small-screen {
+        @include flexCenter(column);
+
+        .container {
+            @include flexCenter(column);
+            gap: 1rem;
+            max-width: 90%;
+
+            .icon {
+                font-size: 1.5rem;
+            }
+
+            .nome {
+                font-size: 2rem;
+            }
+
+            .descricao {
+                font-size: 1.2rem;
+            }
+
+            .localizacao {
+                p {
+                    font-size: 1rem;
+                }
+            }
+
+            .horarios {
+                .horario {
+                    font-size: 1rem;
+                }
+            }
+        }
+    }
+}
+
+.headerCardapio2 {
+    @include mobile-screen {
+        @include flexCenter(column);
+
+        .container {
+            @include flexCenter(column);
+            gap: 1rem;
+            max-width: 95%;
+
+            .icon {
+                font-size: 1.3rem;
+            }
+
+            .nome {
+                font-size: 1.6rem;
+            }
+
+            .descricao {
+                font-size: 1rem;
+            }
+
+            .localizacao {
+                p {
+                    font-size: .8rem;
+                }
+            }
+
+            .horarios {
+                .horario {
+                    font-size: .8rem;
+                }
+            }
+        }
+    }
+}
+
+.headerMobile {
+    display: none;
+
+    @include small-screen {
+        @include flexBetween(row);
+        height: 100%;
+        width: 100vw;
+        background-color: $cor-primaria;
+         border-bottom: 2px solid rgba(0, 0, 0, 0.096);
+        padding: .5rem 1.5rem;
+        box-shadow: 0px 20px 6px -9px rgba(0, 0, 0, 0.145);
+
+        .logo {
+            @include flexCenter(row);
+
+            img {
+                width: 3rem;
+            }
+        }
+
+        .icon{
+            width: 2rem;
+        }
+    }
 }

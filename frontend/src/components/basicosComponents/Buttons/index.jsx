@@ -5,9 +5,9 @@ import { BiSolidMessageSquareAdd } from 'react-icons/bi';
 import { GrPrevious } from 'react-icons/gr';
 import { MdDeleteForever } from 'react-icons/md';
 
-const ButtonForm = ({ onSave }) => {
+const ButtonForm = () => {
   return (
-    <button type="submit" onClick={ onSave } className='buttonForm'>
+    <button type="submit" className='buttonForm'>
       salvar
     </button>
   )
@@ -17,6 +17,22 @@ const ButtonCadastrar = () => {
   return (
     <button type="submit" className='buttonCadastrar'>
       Criar Cardapio
+    </button>
+  )
+}
+
+const ButtonEfeite = ({texto, onClick}) => {
+  return (
+    <button type="submit" className='buttonCadastrar' onClick={onClick}>
+      {texto}
+    </button>
+  )
+}
+
+const ButtonLogin = () => {
+  return (
+    <button type="submit" className='buttonCadastrar'>
+      Entrar
     </button>
   )
 }
@@ -44,6 +60,14 @@ const ButtonAdd = () => {
   )
 }
 
+const ButtonComIcon = ({children, onClick}) => {
+  return (
+    <button type="submit" className='buttonAdd' onClick={onClick}>
+      {children}
+    </button>
+  )
+}
+
 const ButtonVoltar = ({ onClick }) => {
   return (
     <a href="#" onClick={onClick} className='buttonVoltar'>
@@ -52,9 +76,12 @@ const ButtonVoltar = ({ onClick }) => {
     </a>
   );
 };
-const ButtonVerCardapio = () => {
+const ButtonVerCardapio = ({url}) => {
+  const handleClick = () => {
+    window.open(url, '_blank');
+  };
   return (
-    <button type="submit" className='buttonVerCardapio'>
+    <button type="submit" className='buttonVerCardapio' onClick={handleClick}>
       <BsBoxArrowUpRight className="icon"/>
       Ver o cardapio
     </button>
@@ -62,10 +89,27 @@ const ButtonVerCardapio = () => {
 }
 
 
-const ButtonRemove = () => {
+const ButtonRemove = ({ onClick }) => {
   return (
-    <button className='buttonRemove'>
+    <button className='buttonRemove' onClick={ onClick }>
       <MdDeleteForever className="icon"/>
+    </button>
+  )
+}
+
+const ButtonSimples = ({ children, onClick }) => {
+  return (
+    <button className='buttonRemove' onClick={ onClick }>
+      <MdDeleteForever className="icon"/>
+      {children}
+    </button>
+  )
+}
+
+const ButtonDivulgacao = ({ children, onClick }) => {
+  return (
+    <button className='buttonDivulgacao' onClick={ onClick }>
+      {children}
     </button>
   )
 }
@@ -79,6 +123,7 @@ const ButtonAjuda = () => {
   )
 }
 
+
 export {
   ButtonForm,
   ButtonVerCardapio,
@@ -88,5 +133,10 @@ export {
   ButtonAvancar,
   ButtonAvancar2,
   ButtonVoltar,
-  ButtonCadastrar
+  ButtonLogin,
+  ButtonCadastrar,
+  ButtonEfeite,
+  ButtonSimples,
+  ButtonComIcon,
+  ButtonDivulgacao
 } 

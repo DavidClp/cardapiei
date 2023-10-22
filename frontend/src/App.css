@@ -7,8 +7,8 @@
     font-family: 'Poppins', sans-serif;
     text-decoration: none;
     list-style: none;
-    
-}
+/*     overflow-x: hidden;
+ */}
 
 html, body{
     height: 100%;

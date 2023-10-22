@@ -1,12 +1,12 @@
 import React from 'react';
 import Header from '../../components/adminComponents/Header';
-import Main from '../../components/adminComponents/Main';
+import Main from '../../components/adminComponents/MainEstabeelcimento';
+import { Navigate } from 'react-router-dom';
 
 const Admin = () => {
   return (
     <section>
-        <Header/>
-        <Main/>
+        {<Navigate to="/admin/cardapio" />},
     </section>
   )
 }

@@ -6,7 +6,11 @@ const veriftJWT = require('../middlewares/authorizator')
 
 router.post('/', veriftJWT, horarioController.create);
 
-router.get('/', veriftJWT, horarioController.findAll);
+router.get('/geral', veriftJWT, horarioController.findAll);
+
+router.get('/:id', veriftJWT, horarioController.findByEstId);
+
+router.get('/geral/:id', veriftJWT, horarioValidator.findById(), horarioController.findById);
 
 router.get('/:id', veriftJWT, horarioValidator.findById(), horarioController.findById);
 

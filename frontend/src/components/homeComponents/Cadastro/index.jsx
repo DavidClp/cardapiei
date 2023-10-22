@@ -6,12 +6,11 @@ import { useForm } from 'react-hook-form'
 import { useMutation } from "react-query";
 
 const Cadastro = () => {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, formState: {errors} } = useForm();
 
     const [cadastrou, setCadastrou] = useState(0); //GAMBIARRA, ARRUMAR
 
     const onSubmit = (data) => {
-        //console.log(data)
         mutate(data);
     }
 
@@ -28,15 +27,14 @@ const Cadastro = () => {
     }
     );
 
-
     return (
         <section>
-
             {cadastrou == 1 && <Navigate to="/setup" />},
             <FormCadastro
                 handleSubmit={handleSubmit}
                 onSubmit={onSubmit}
                 register={register}
+                errors={errors}
             />
         </section>
     )

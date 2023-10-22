@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'horario_atendimento',
     tableName: 'horarios',
-    paranoid: true
+    paranoid: false
   });
   return horario_atendimento;
 };

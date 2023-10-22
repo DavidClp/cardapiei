@@ -35,9 +35,10 @@ const findAllByWhere = async function(where){
     return categorias;
 }
 
-const findAllComProdutos = async function(){
+const findAllComProdutos = async function(id){
     const categoriasComProdutos = await Categoria.findAll({
         include: [{ model: Produto }],
+        where: {est_id:id}
       });
     return categoriasComProdutos;
 }

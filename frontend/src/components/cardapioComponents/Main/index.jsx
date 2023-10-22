@@ -3,7 +3,7 @@ import './main.scss'
 
 const Main = (props) => {
   const categorias = props.categoriaComProdutos;
-  const [categoriaAtiva, setCategoriaAtiva] = useState(null);
+  const [categoriaAtiva, setCategoriaAtiva] = useState(categorias[0]);
   const menuRef = useRef(null); // Ref para a seção de menu
 
   const handleClick = (categoria) =>{
@@ -21,7 +21,7 @@ const Main = (props) => {
   }
 
   return (
-    <section className='main'>
+    <section className='mainCardapio'>
       <aside className='categorias'>
         {categorias.map((categoria) => (
           <div
@@ -51,7 +51,7 @@ const Main = (props) => {
                     {produto.imagem ? (<img src={produto.imagem} alt="foto do produto" />) : (null)}
                     <div className="texts">
                       <h3>{produto.nome}</h3>
-                      <p>{produto.descricao}</p>
+                      <p>{produto.descricao != 'null' && produto.descricao}</p>
                     </div>
                   </div>
 

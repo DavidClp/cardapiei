@@ -27,8 +27,8 @@ const findAll = async function(){
     return categorias;
 }
 
-const findByEstId = async function(){
-    const categorias = await categoriaRepository.findAllComProdutos();
+const findByEstId = async function(id){
+    const categorias = await categoriaRepository.findAllComProdutos(id);
     if(!categorias){
         return createError(404, "Categorias não encontrado");
     }

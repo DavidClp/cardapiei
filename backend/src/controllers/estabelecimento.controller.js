@@ -8,11 +8,11 @@ const create = async function(req, res, next){
         if(!errors.isEmpty()){
             throw createError(422, {errors: errors.array()});
         }
-        
+
         const response = await estabelecimentoService.create({
             nome: req.body.nome,
             descricao: req.body.descricao,
-            logo: req.body.logo,
+            logo: req.file ? req.file.firebaseUrl: null,
             usu_id: req.usuario_id
         });
         if(response && response.message){
@@ -72,11 +72,10 @@ const updateById = async function(req, res, next){
         if(!errors.isEmpty()){
             throw createError(422, { errors: errors.array() })
         }
-        
         const response = await estabelecimentoService.updateById({
             nome: req.body.nome,
             descricao: req.body.descricao,
-            logo: req.body.logo,
+            logo: req.file ? req.file.firebaseUrl: null,
         }, req.params.id);
         if(response && response.message){
             throw response;
@@ -151,6 +150,22 @@ const findByUrl = async function(req, res, next){
         next(error);
     }
 }
+const findUrl = async function(req, res, next){
+    try {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            throw createError(422, {errors: errors.array()});
+        }
+        
+        const response = await estabelecimentoService.findById(req.params.id);        
+        if(response && response.message){
+            throw response;
+        }
+        res.send(response.url);
+    } catch (error) {
+        next(error);
+    }
+}
 
 const deletar = async function(req, res, next){
     try {
@@ -180,4 +195,5 @@ module.exports = {
     updateById,
     findByUserId,
     deletar,
+    findUrl
 }

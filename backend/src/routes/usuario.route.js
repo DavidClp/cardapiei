@@ -17,7 +17,9 @@ router.get('/', veriftJWT, usuarioController.findAll);
 
 router.get('/:id', veriftJWT, usuarioValidator.findById(), usuarioController.findById);
 
-router.put('/:id', veriftJWT, usuarioValidator.update(), usuarioController.update);
+router.put('/geral/:id', veriftJWT, usuarioValidator.update(), usuarioController.update); 
+
+router.put('/senha', veriftJWT, usuarioController.updateSenhaUserAtual);
 
 router.delete('/:id', veriftJWT, usuarioValidator.deletar(), usuarioController.deletar);
 

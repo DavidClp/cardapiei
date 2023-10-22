@@ -25,7 +25,14 @@ const findOneByWhere = async function(where){
     const horario = await horario_atendimento.findOne({
         where: where
     });
-    return Horario;
+    return horario;
+}
+
+const findAllByWhere = async function(where){
+    const horarios = await horario_atendimento.findAll({
+        where: where
+    });
+    return horarios;
 }
 
 const deletar = async function(id){
@@ -37,6 +44,7 @@ module.exports = {
     update,
     findAll,
     findById,
+    findAllByWhere,
     findOneByWhere,
     deletar
 }

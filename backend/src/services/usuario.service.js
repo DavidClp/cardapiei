@@ -1,8 +1,9 @@
 const usuarioRepository = require('../repositories/usuario.repository');
 require('dotenv').config();
-const createError = require('http-errors')
+const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const { sign } = require('jsonwebtoken');
+const estabelecimentoService = require('../services/estabelecimento.service')
 
 const create = async function(usuario){
     const thereUser = await usuarioRepository.findOneByWhere({email: usuario.email});
@@ -40,7 +41,6 @@ const login = async function(usuario){
     }
     
     const comparacaoSenha = await bcrypt.compare(usuario.senha, usuarioLogin.senha);
-    console.log("TESTE")
     if(!comparacaoSenha){
         return createError(401, "Usuário inválido");
     }
@@ -52,10 +52,13 @@ const login = async function(usuario){
     })
     delete usuarioLogin.senha;
 
+    const estabelecimento = await estabelecimentoService.findByUserId(usuarioLogin.id);
     return{
         auth: true,
         usuario: usuarioLogin, 
-        token: token
+        token: token,
+        est_id: estabelecimento.id,
+        est_url: estabelecimento.url
     }
 }
 
@@ -63,6 +66,10 @@ const update =  async function(usuario, id){
     const thereIsUSer = await usuarioRepository.findById(id)
     if(!thereIsUSer){
         return createError(404, 'Usuário não existe');
+    }
+
+    if (usuario.senha){
+        usuario.senha = await bcrypt.hash(usuario.senha, ~~process.env.SALT);
     }
 
     await usuarioRepository.update(usuario, id)

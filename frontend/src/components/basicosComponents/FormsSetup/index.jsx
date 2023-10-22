@@ -14,14 +14,21 @@ import { useForm } from 'react-hook-form'
 import { useQuery, useMutation } from "react-query";
 
 const FormEstabelecimento = ({ setPassoAtual }) => {
-  const { register, handleSubmit, reset, getValues } = useForm();
+  const [imagemSelecionada, setImagemSelecionada] = useState(null);
+  const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm();
   const onSubmit = (data) => {
-    mutate(data);
+    const formData = new FormData();
+    formData.append('nome', data.nome);
+    formData.append('descricao', data.descricao);
+    formData.append('logo', data.logo[0]);
+    console.log(data)
+    mutate(formData);
   }
 
-  const { mutate } = useMutation((data) => {
-    return axios.post('http://localhost:8080/api/estabelecimentos', data, {
+  const { mutate } = useMutation((formData) => {
+    return axios.post('http://localhost:8080/api/estabelecimentos', formData, {
       headers: {
+        'Content-Type': 'multipart/form-data',
         'token': localStorage.getItem('token'),
       },
     })
@@ -31,11 +38,27 @@ const FormEstabelecimento = ({ setPassoAtual }) => {
       onSuccess: (responseData) => {
         const dados = responseData;
         localStorage.setItem('est_id', dados.id);
-        reset();
         setPassoAtual((passoAtual) => passoAtual + 1);
       }
     }
   );
+
+  const handleImagemChange = (e) => {
+    const arquivoSelecionado = e.target.files[0];
+    if (arquivoSelecionado) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        setImagemSelecionada(e.target.result);
+      };
+
+      reader.readAsDataURL(arquivoSelecionado);
+    }
+  };
+
+  const handleRemoverImagem = () => {
+    setImagemSelecionada(null);
+  };
   return (
     <div className="formContainer">
       <div className="titulo">
@@ -51,9 +74,10 @@ const FormEstabelecimento = ({ setPassoAtual }) => {
             name="nome"
             id="nome"
             placeholder="Lanchonete"
-            //value={getValues("nome")}
-            {...register("nome")}
+            className={errors?.nome && "inputError"}
+            {...register("nome", { required: true })}
           />
+          {errors?.nome?.type === 'required' && <p className='errorMessage'>Nome é requirido</p>}
         </div>
 
         <div className="input">
@@ -70,18 +94,38 @@ const FormEstabelecimento = ({ setPassoAtual }) => {
         </div>
 
         <div className="custom-file">
-          <label className="custom-file-label" htmlFor="customFile">
-            Escolha um logotipo
-          </label>
-          <input type="file" className="custom-file-input" id="customFile" name="file" />
-        </div>
+          {imagemSelecionada ? (
+            <div>
+              <img src={imagemSelecionada} alt="Imagem Selecionada" />
+            </div>
+          ) : (
+            <div>
+              <label className="FileContainer" htmlFor="customFile">
+                Clique Aqui para Adicionar uma imagem
+              </label>
 
+            </div>)}
+          {imagemSelecionada ? (
+            <label className="customFileLabel" onClick={handleRemoverImagem}>
+              Remover
+            </label>
+          ) : (
+            <label className="customFileLabel" htmlFor="customFile">
+              Adicionar
+            </label>
+          )}
+        </div>
+        <input type="file" className="custom-file-input"
+          id="customFile"
+          name="file"
+          {...register("logo")}
+          onChange={handleImagemChange}
+        />
         <ButtonAvancar />
       </form>
     </div>
   );
 };
-
 
 const FormLocalizacao = ({ setPassoAtual, handleVoltar }) => {
   const { register, handleSubmit, reset, getValues } = useForm();
@@ -100,7 +144,6 @@ const FormLocalizacao = ({ setPassoAtual, handleVoltar }) => {
     {
       onSuccess: (responseData) => {
         const dados = responseData;
-        console.log(dados)
         reset();
         setPassoAtual((passoAtual) => passoAtual + 1);
       }
@@ -192,11 +235,27 @@ const FormContato = ({ setPassoAtual, handleVoltar }) => {
   },
     {
       onSuccess: (responseData) => {
-        const dados = responseData;
-        console.log(dados)
-        reset();
         refetch();//verificar
+        const dados = responseData;
+        reset();
       }
+    }
+  );
+
+  const { mutate: deleteContato } = useMutation(
+    (contatoId) =>
+      axios.delete(`http://localhost:8080/api/contatos/${contatoId}`, {
+        headers: {
+          'token': localStorage.getItem('token'),
+        },
+      }),
+    {
+      onSuccess: () => {
+        refetch();
+      },
+      onError: (error) => {
+        console.error('Erro ao excluir o contato', error);
+      },
     }
   );
   return (
@@ -218,7 +277,6 @@ const FormContato = ({ setPassoAtual, handleVoltar }) => {
           <ButtonAdd />
         </div>
       </form>
-      {console.log(data)}
       {isLoading === false &&
         data.map((contato) => (
           <div className="getContatos" key={contato.id}>
@@ -230,22 +288,10 @@ const FormContato = ({ setPassoAtual, handleVoltar }) => {
               <p>{contato.contato}</p>
             </div>
 
-            <ButtonRemove />
+            <ButtonRemove onClick={() => deleteContato(contato.id)} />
           </div>
         ))
       }
-          <div className="getContatos" >
-            <div className="tipo">
-              <p>wdwdwqadaw</p>
-            </div>
-
-            <div className="contato">
-              <p>wfwfwf</p>
-            </div>
-
-            <ButtonRemove />
-          </div>
-
       <div className="buttons">
         <ButtonVoltar onClick={handleVoltar} />
         <ButtonAvancar2 setPassoAtual={setPassoAtual} />
@@ -260,8 +306,19 @@ const FormHorario = ({ setPassoAtual, handleVoltar }) => {
     mutate(data);
   }
 
+  //pegar horarios ja registrados para mostrar
+  const est_id = localStorage.getItem('est_id');
+  const { data, isLoading, refetch } = useQuery(["horarios", est_id], () => {
+    return axios.get(`http://localhost:8080/api/horarios/${est_id}`, {
+      headers: {
+        'token': localStorage.getItem('token'),
+      },
+    })
+      .then((response) => response.data);
+  })
+
   const { mutate } = useMutation((data) => {
-    return axios.post('http://localhost:8080/api/localizacao', data, {
+    return axios.post('http://localhost:8080/api/horarios/', data, {
       headers: {
         'token': localStorage.getItem('token'),
       },
@@ -271,10 +328,26 @@ const FormHorario = ({ setPassoAtual, handleVoltar }) => {
     {
       onSuccess: (responseData) => {
         const dados = responseData;
-        console.log(dados)
         reset();
-        setPassoAtual((passoAtual) => passoAtual + 1);
+        refetch();//verificar
       }
+    }
+  );
+
+  const { mutate: deleteHorario } = useMutation(
+    (HorarioId) =>
+      axios.delete(`http://localhost:8080/api/horarios/${HorarioId}`, {
+        headers: {
+          'token': localStorage.getItem('token'),
+        },
+      }),
+    {
+      onSuccess: () => {
+        refetch();
+      },
+      onError: (error) => {
+        console.error('Erro ao excluir o contato', error);
+      },
     }
   );
   return (
@@ -284,21 +357,54 @@ const FormHorario = ({ setPassoAtual, handleVoltar }) => {
         <h3>Horários de atendimento</h3>
       </div>
 
-      <form action="" className="form">
-
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <div className="inputSelect">
+          <select name="dia" id="dia" {...register("dia")}>
+            <option value=""></option>
+            <option value="Sabado">Sabado</option>
+            <option value="Domingo">Domingo</option>
+            <option value="Segunda Feira">Segunda Feira</option>
+            <option value="Terça Feira">Terça Feira</option>
+          </select>
+          <input type="text" name="hor_abre" id="hor_abre" {...register("hor_abre")} />
+          <input type="text" name="hor_fecha" id="hor_fecha" {...register("hor_fecha")} />
+          <ButtonAdd />
+        </div>
       </form>
+      {isLoading === false &&
+        data.map((horario) => (
+          <div className="getContatos" key={horario.id}>
+            <div className="tipo">
+              <p>{horario.dia}</p>
+            </div>
+
+            <div className="contato">
+              <p>{horario.hor_abre}</p>
+              <p>{horario.hor_fecha}</p>
+            </div>
+
+            <ButtonRemove onClick={() => deleteHorario(horario.id)} />
+          </div>
+        ))
+      }
+      <div className="buttons">
+        <ButtonVoltar onClick={handleVoltar} />
+        <ButtonAvancar2 setPassoAtual={setPassoAtual} />
+      </div>
     </div>
   )
 }
 
 const FormSenha = ({ setPassoAtual, handleVoltar }) => {
-  const { register, handleSubmit, reset, getValues } = useForm();
+  const { register, handleSubmit, reset, getValues, formState: { errors }, watch } = useForm();
   const onSubmit = (data) => {
     mutate(data);
   }
 
+  const watchSenha = watch("senha");
+
   const { mutate } = useMutation((data) => {
-    return axios.post('http://localhost:8080/api/localizacao', data, {
+    return axios.put('http://localhost:8080/api/usuarios/senha', data, {
       headers: {
         'token': localStorage.getItem('token'),
       },
@@ -308,7 +414,6 @@ const FormSenha = ({ setPassoAtual, handleVoltar }) => {
     {
       onSuccess: (responseData) => {
         const dados = responseData;
-        console.log(dados)
         reset();
         setPassoAtual((passoAtual) => passoAtual + 1);
       }
@@ -325,24 +430,29 @@ const FormSenha = ({ setPassoAtual, handleVoltar }) => {
         <div className="input">
           <label htmlFor="senha">Senha</label>
           <input
-            type="text"
+            type="password"
             name="senha"
             id="senha"
             placeholder="********"
-            //value={getValues("nome")}
-            {...register("senha")}
+            className={errors?.senha && "inputError"}
+            {...register("senha", { required: true, minLength: 8 })}
           />
+          {errors?.senha?.type === 'required' && <p className='errorMessage'>senha é requirido</p>}
+          {errors?.senha?.type === 'minLength' && <p className='errorMessage'>Senha precisa no minimo 8 caracteres</p>}
         </div>
+
         <div className="input">
-          <label htmlFor="ConfirmaSenha">Confirme sua senha</label>
+          <label htmlFor="confirmaSenha">Confirme sua senha</label>
           <input
-            type="text"
-            name="ConfirmaSenha"
-            id="ConfirmaSenha"
+            type="password"
+            name="confirmaSenha"
+            id="confirmaSenha"
             placeholder="********"
-            //value={getValues("nome")}
-            {...register("ConfirmaSenha")}
+            className={errors?.confirmaSenha && "inputError"}
+            {...register("confirmaSenha", { required: true, validate: (value) => value === watchSenha })}
           />
+          {errors?.confirmaSenha?.type === 'required' && <p className='errorMessage'>Senha é requirido</p>}
+          {errors?.confirmaSenha?.type === 'validate' && <p className='errorMessage'>Senhas não estao iguais</p>}
         </div>
 
         <ButtonAvancar />

@@ -6,7 +6,30 @@ const create = async function(produto){
 }
 
 const update = async function(produto, id){
-    await produto.update(produto, {
+    const fieldsToUpdate = {};
+
+    if (produto.nome !== null) {
+        fieldsToUpdate.nome = produto.nome;
+    }
+
+    if (produto.valor !== null) {
+        fieldsToUpdate.valor = produto.valor;
+    }
+
+    if (produto.descricao !== null) {
+        fieldsToUpdate.descricao = produto.descricao;
+    }
+
+    if (produto.imagem !== null) {
+        fieldsToUpdate.imagem = produto.imagem;
+    }
+
+    // Verifique se há campos para atualizar
+ /*    if (Object.keys(fieldsToUpdate).length === 0) {
+        return "Nenhum campo para atualizar.";
+    } */
+
+    await Produto.update(fieldsToUpdate, {
         where: {id: id}
     });
 }

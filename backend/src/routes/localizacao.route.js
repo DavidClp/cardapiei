@@ -8,11 +8,13 @@ router.post('/', veriftJWT, localizacaoController.create);
 
 router.get('/', veriftJWT, localizacaoController.findAll);
 
-router.get('/:id', veriftJWT, localizacaoValidator.findById(), localizacaoController.findById);
+router.get('/geral/:id', veriftJWT, localizacaoValidator.findById(), localizacaoController.findById);
 
-router.put('/:id', veriftJWT, localizacaoValidator.update(), localizacaoController.updateById);
+router.get('/:id', veriftJWT, localizacaoController.findByEstId);
 
-router.put('/', veriftJWT, localizacaoController.update);
+router.put('/geral/:id', veriftJWT, localizacaoValidator.update(), localizacaoController.updateById);
+
+router.put('/:id', veriftJWT, localizacaoController.updateByEstId);
 
 router.delete('/:id', veriftJWT, localizacaoValidator.deletar(), localizacaoController.deletar);
 

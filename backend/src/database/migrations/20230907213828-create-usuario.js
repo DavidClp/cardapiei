@@ -21,6 +21,14 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      plano: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      dataUltimoPagamento: {
+        allowNull: true,
+        type: Sequelize.DATE
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

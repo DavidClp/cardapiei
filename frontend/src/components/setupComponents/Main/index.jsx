@@ -42,7 +42,14 @@ const Main = () => {
         />
       )}
 
-      {passoAtual === 6 && <Navigate to="/admin" />}
+      {passoAtual === 5 && (
+        <FormSenha
+          setPassoAtual={setPassoAtual}
+          handleVoltar={handleVoltar}
+        />
+      )}
+
+      {passoAtual === 6 && <Navigate to="/admin/cardapio" />}
     </section>
   );
 };

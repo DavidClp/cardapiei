@@ -31,6 +31,15 @@ const findById = async function(id){
     return horario;
 }
 
+const findByEstId = async function(id){
+    const horario = await horarioRepository.findAllByWhere({est_id: id});
+
+    /* if(!horario){
+        return createError(404, "Horario não encontrado")
+    } */
+    return horario;
+}
+
 const deletar = async function(id){
     const horario = await horarioRepository.findById(id);
 
@@ -45,6 +54,7 @@ module.exports = {
     create,
     update,
     findAll,
+    findByEstId,
     findById,
     deletar,
 }

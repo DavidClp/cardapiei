@@ -51,6 +51,8 @@
     color: $cor-text-secundaria;
     font-size: .8rem;
     cursor: pointer;
+    @include flexCenter(row);
+    gap: .4rem;
 
     &:hover{
         background-color: $cor-botao-hover;
@@ -143,4 +145,77 @@
 	&::before {
 		border: 0px ;
 	}
+}
+
+
+
+/* CSS */
+.buttonDivulgacao {
+  appearance: button;
+  background-color: #1899D6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  line-height: 20px;
+  margin: 0;
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter .2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  @include flexCenter(column);
+  gap: .5rem;
+  width: 20rem;
+  height: 10rem;
+}
+.buttonDivulgacao .icon {
+    font-size: 3rem;
+}
+
+.buttonDivulgacao:after {
+  background-clip: padding-box;
+  background-color: #1CB0F6;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.buttonDivulgacao:main,
+.buttonDivulgacao:focus {
+  user-select: auto;
+}
+
+.buttonDivulgacao:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+}
+
+.buttonDivulgacao:disabled {
+  cursor: auto;
+}
+
+.buttonDivulgacao:active {
+  border-width: 4px 0 0;
+  background: none;
 }

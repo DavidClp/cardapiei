@@ -1,13 +1,56 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import './forms.scss';
-import { ButtonForm, ButtonAdd, ButtonCadastrar } from '../../basicosComponents/Buttons/';
+import { ButtonAvancar, ButtonLogin, ButtonCadastrar, ButtonForm, ButtonRemove } from '../../basicosComponents/Buttons/';
+import { ButtonAdd } from '../../basicosComponents/Buttons/';
 
 import { ImHome } from 'react-icons/im';
 import { FaLocationDot } from 'react-icons/fa6';
 import { BsFillTelephoneInboundFill } from 'react-icons/bs';
 import { AiFillClockCircle } from 'react-icons/ai';
+import { GiPadlock } from 'react-icons/gi';
 
-const FormEstabelecimento = ({ onSave }) => {
+import axios from "axios"
+import { useForm } from 'react-hook-form'
+import { useQuery, useMutation } from "react-query";
+import validator from 'validator';
+const est_id = localStorage.getItem('est_id');
+const url = "http://localhost:8080/api/"
+
+const FormEstabelecimento = () => {
+  const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm();
+  //pegar dados ja registrados para mostrar
+  const { data, isLoading, refetch } = useQuery(["estabelecimento", est_id], () => {
+    return axios.get(`${url}estabelecimentos/geral/${est_id}`, {
+      headers: {
+        'token': localStorage.getItem('token'),
+      },
+    })
+      .then((response) => response.data);
+  })
+
+  const onSubmit = (dataForm) => {
+    const formData = new FormData();
+    formData.append('nome', dataForm.nome);
+    formData.append('descricao', dataForm.descricao);
+    formData.append('logo', dataForm.logo[0]);
+    mutate(formData);
+  }
+  const { mutate } = useMutation((formData) => {
+    return axios.put(`${url}estabelecimentos/geral/${est_id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'token': localStorage.getItem('token'),
+      },
+    })
+      .then((response) => response.data);
+  },
+    {
+      onSuccess: (responseData) => {
+        const dados = responseData;
+      }
+    }
+  );
+
   return (
     <div className="formContainer">
       <div className="titulo">
@@ -15,117 +58,83 @@ const FormEstabelecimento = ({ onSave }) => {
         <h3>Informações básicas</h3>
       </div>
 
-      <form action="" className="form">
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <div className="input">
+          <label htmlFor="nome">Nome do estabelecimento</label>
+          <input
+            type="text"
+            name="nome"
+            id="nome"
+            placeholder="Lanchonete"
+            className={errors?.nome && "inputError"}
+            defaultValue={data?.nome || ""}
+            {...register("nome", { required: true })}
+          />
+          {errors?.nome?.type === 'required' && <p className='errorMessage'>Nome é requirido</p>}
+        </div>
 
         <div className="input">
-          <label for="nome">Nome do estabelecimento</label>
-          <input type="text" name="nome" id="nome" placeholder='Lanchonete' />
+          <label htmlFor="descricao">Descrição do estabelecimento</label>
+          <textarea
+            name="descricao"
+            id="descricao"
+            cols="50"
+            rows="3"
+            placeholder="Mostre o que seu estabelecimento tem de melhor aos seus clientes"
+            defaultValue={data?.descricao || ""}
+            {...register("descricao")}
+          ></textarea>
         </div>
 
-        <div className="input">
-          <label for="descricao">Descrição do estabelecimento</label>
-          <textarea name="descricao" id="descricao" cols="50" rows="3" placeholder='Mostre o que sei estabelecimento tem de melhor aos seus clientes'></textarea>
+        <div className="custom-file">
+          <label className="custom-file-label" htmlFor="customFile">
+            Escolha um logotipo
+          </label>
+          <input type="file" className="custom-file-input"
+            id="customFile"
+            name="file"
+            {...register("logo")}
+          />
         </div>
 
-        <div class="custom-file">
-          <label class="custom-file-label" for="customFile">Escolha um logotipo</label>
-          <input type="file" class="custom-file-input" id="customFile" name="file" />
-        </div>
-
-        <ButtonForm onSave={onSave}/>
-
+        <ButtonForm />
       </form>
     </div>
-  )
-}
+  );
+};
 
-const FormLocalizacao = ({ onSave }) => {
+const FormLocalizacao = () => {
+  const { register, handleSubmit, reset, getValues } = useForm();
+  const onSubmit = (dataLocalizacao) => {
+    mutate(dataLocalizacao);
+  }
+
+  //pegar dados ja registrados para mostrar
+  const { data, isLoading, refetch } = useQuery(["localizacao", est_id], () => {
+    return axios.get(`${url}localizacao/${est_id}`, {
+      headers: {
+        'token': localStorage.getItem('token'),
+      },
+    })
+      .then((response) => response.data);
+  })
+
+  const { mutate } = useMutation((dataLocalizacao) => {
+    return axios.put(`${url}localizacao/${est_id}`, dataLocalizacao, {
+      headers: {
+        'token': localStorage.getItem('token'),
+      },
+    })
+      .then((response) => response.data);
+  },
+    {
+      onSuccess: (responseData) => {
+        const dados = responseData;
+      }
+    }
+  );
   return (
     <div className="formContainer">
-      <div className="titulo">
-        <FaLocationDot />
-        <h3>Localização do estabelecimento</h3>
-      </div>
-
-      <form action="" className="form">
-
-        <div className="input">
-          <label for="cep">CEP</label>
-          <input type="text" name="cep" id="cep" />
-        </div>
-
-        <div className="input">
-          <label for="endereco">Endereço</label>
-          <input type="text" name="endereco" id="endereco" />
-        </div>
-
-        <div className="input">
-          <label for="numero">Número</label>
-          <input type="number" name="numero" id="numero" />
-        </div>
-
-        <div className="input">
-          <label for="bairro">Bairro</label>
-          <input type="text" name="bairro" id="bairro" />
-        </div>
-
-        <div className="input">
-          <label for="cidade">Cidade</label>
-          <input type="text" name="cidade" id="cidade" />
-        </div>
-
-        <ButtonForm onSave={onSave}/>
-
-      </form>
-    </div>
-  )
-}
-
-const FormContato = () => {
-  return (
-    <div className="formContainer">
-      <div className="titulo">
-        <BsFillTelephoneInboundFill />
-        <h3>Meios de contato do estabelecimento</h3>
-      </div>
-
-      <form action="" className="form">
-
-        <div className="inputSelect">
-          <select name="tipoContato" id="tipoContato">
-            <option value="">Escolha</option>
-            <option value="telefone">Telefone</option>
-            <option value="whatsapp">Whatsapp</option>
-            <option value="email">E-mail</option>
-          </select>
-
-          <input type="text" name="contato" id="contato" />
-          <ButtonAdd />
-        </div>
-      </form>
-    </div>
-  )
-}
-
-const FormHorario = () => {
-  return (
-    <div className="formContainer">
-      <div className="titulo">
-        <AiFillClockCircle />
-        <h3>Horários de atendimento</h3>
-      </div>
-
-      <form action="" className="form">
-
-      </form>
-    </div>
-  )
-}
-
-
-const FormCadastro = ({ handleSubmit, onSubmit, register }) => {
-  return (
-    <div className="formContainer formCadastro">
       <div className="titulo">
         <FaLocationDot />
         <h3>Localização do estabelecimento</h3>
@@ -134,16 +143,302 @@ const FormCadastro = ({ handleSubmit, onSubmit, register }) => {
       <form onSubmit={handleSubmit(onSubmit)} className="form">
 
         <div className="input">
+          <label htmlFor="cep">CEP</label>
+          <input type="text" name="cep" id="cep"
+            {...register("cep")}
+            defaultValue={data?.cep || ""}
+          />
+        </div>
+
+        <div className="input">
+          <label htmlFor="endereco">Endereço</label>
+          <input type="text" name="endereco" id="endereco"
+            defaultValue={data?.endereco || ""}
+            {...register("endereco")}
+          />
+        </div>
+
+        <div className="input">
+          <label htmlFor="numero">Número</label>
+          <input type="number" name="numero" id="numero"
+            {...register("numero")}
+            defaultValue={data?.numero || ""}
+          />
+        </div>
+
+        <div className="input">
+          <label htmlFor="bairro">Bairro</label>
+          <input type="text" name="bairro" id="bairro"
+            {...register("bairro")}
+            defaultValue={data?.bairro || ""}
+          />
+        </div>
+
+        <div className="input">
+          <label htmlFor="cidade">Cidade</label>
+          <input type="text" name="cidade" id="cidade"
+            {...register("cidade")}
+            defaultValue={data?.cidade || ""}
+          />
+        </div>
+        <ButtonForm />
+      </form>
+    </div>
+  )
+}
+
+const FormContato = ({ setPassoAtual, handleVoltar }) => {
+  const { register, handleSubmit, reset, getValues } = useForm();
+  const onSubmit = (data) => {
+    mutate(data);
+  }
+
+  //pegar contatos ja registrados para mostrar
+  const { data, isLoading, refetch } = useQuery(["contatos", est_id], () => {
+    return axios.get(`${url}contatos/${est_id}`, {
+      headers: {
+        'token': localStorage.getItem('token'),
+      },
+    })
+      .then((response) => response.data);
+  })
+
+  const { mutate: deleteContato } = useMutation(
+    (contatoId) =>
+      axios.delete(`${url}contatos/${contatoId}`, {
+        headers: {
+          'token': localStorage.getItem('token'),
+        },
+      }),
+    {
+      onSuccess: () => {
+        refetch(); 
+      },
+      onError: (error) => {
+        console.error('Erro ao excluir o contato', error);
+      },
+    }
+  );
+
+  const { mutate } = useMutation((data) => {
+    return axios.post(`${url}contatos`, data, {
+      headers: {
+        'token': localStorage.getItem('token'),
+      },
+    })
+      .then((response) => response.data);
+  },
+    {
+      onSuccess: (responseData) => {
+        refetch();//verificar
+        const dados = responseData;
+        reset();
+      }
+    }
+  );
+  return (
+    <div className="formContainer">
+      <div className="titulo">
+        <BsFillTelephoneInboundFill />
+        <h3>Meios de contato do estabelecimento</h3>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <div className="inputSelect">
+          <select name="tipoContato" id="tipoContato" {...register("tipo")}>
+            <option value="">Escolha</option>
+            <option value="telefone">Telefone</option>
+            <option value="whatsapp">Whatsapp</option>
+            <option value="email">E-mail</option>
+          </select>
+          <input type="text" name="contato" id="contato" {...register("contato")} />
+          <ButtonAdd />
+        </div>
+      </form>
+      {isLoading === false &&
+        data.map((contato) => (
+          <div className="getContatos" key={contato.id}>
+            <div className="tipo">
+              <p>{contato.tipo}</p>
+            </div>
+
+            <div className="contato">
+              <p>{contato.contato}</p>
+            </div>
+            <ButtonRemove onClick={() => deleteContato(contato.id)}/>
+          </div>
+        ))
+      }
+    </div>
+  )
+}
+
+const FormHorario = () => {
+  const { register, handleSubmit, reset, getValues } = useForm();
+  const onSubmit = (data) => {
+    mutate(data);
+  }
+
+  //pegar horarios ja registrados para mostrar
+  const { data, isLoading, refetch } = useQuery(["horarios", est_id], () => {
+    return axios.get(`${url}horarios/${est_id}`, {
+      headers: {
+        'token': localStorage.getItem('token'),
+      },
+    })
+      .then((response) => response.data);
+  })
+
+  const { mutate } = useMutation((data) => {
+    return axios.post(`${url}horarios/`, data, {
+      headers: {
+        'token': localStorage.getItem('token'),
+      },
+    })
+      .then((response) => response.data);
+  },
+    {
+      onSuccess: (responseData) => {
+        const dados = responseData;
+        reset();
+        refetch();//verificar
+      }
+    }
+  );
+
+  const { mutate: deleteHorario } = useMutation(
+    (HorarioId) =>
+      axios.delete(`${url}horarios/${HorarioId}`, {
+        headers: {
+          'token': localStorage.getItem('token'),
+        },
+      }),
+    {
+      onSuccess: () => {
+        refetch(); 
+      },
+      onError: (error) => {
+        console.error('Erro ao excluir o contato', error);
+      },
+    }
+  );
+  return (
+    <div className="formContainer">
+      <div className="titulo">
+        <AiFillClockCircle />
+        <h3>Horários de atendimento</h3>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <div className="inputSelect">
+          <select name="dia" id="dia" {...register("dia")}>
+            <option value=""></option>
+            <option value="Sabado">Sabado</option>
+            <option value="Domingo">Domingo</option>
+            <option value="Segunda Feira">Segunda Feira</option>
+            <option value="Terça Feira">Terça Feira</option>
+          </select>
+          <input type="text" name="hor_abre" id="hor_abre" {...register("hor_abre")} />
+          <input type="text" name="hor_fecha" id="hor_fecha" {...register("hor_fecha")} />
+          <ButtonAdd />
+        </div>
+      </form>
+      {isLoading === false &&
+        data.map((horario) => (
+          <div className="getContatos" key={horario.id}>
+            <div className="tipo">
+              <p>{horario.dia}</p>
+            </div>
+
+            <div className="contato">
+              <p>{horario.hor_abre}</p>
+              <p>{horario.hor_fecha}</p>
+            </div>
+
+            <ButtonRemove onClick={() => deleteHorario(horario.id)}/>
+          </div>
+        ))
+      }
+    </div>
+  )
+}
+
+const FormCadastro = ({ handleSubmit, onSubmit, register, errors }) => {
+  return (
+    <div className="formContainer formCadastro">
+      <div className="titulo">
+        <FaLocationDot />
+        <h3>Cadastro</h3>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+
+        <div className="input">
           <label htmlFor="nome">Seu nome</label>
-          <input type="text" name="nome" id="nome" {...register("nome")}/>
+          <input type="text" name="nome"
+            id="nome"
+            className={errors?.nome && "inputError"}
+            {...register("nome", { required: true })}
+          />
+          {errors?.nome?.type === 'required' && <p className='errorMessage'>Nome é requirido</p>}
         </div>
 
         <div className="input">
           <label htmlFor="email">E-mail</label>
-          <input type="text" name="email" id="email" {...register("email")}/>
+          <input type="text" name="email"
+            id="email"
+            className={errors?.email && "inputError"}
+            {...register("email", {
+              required: true,
+              validate: (value) => validator.isEmail(value)
+            })}
+          />
+          {errors?.email?.type === 'required' && <p className='errorMessage'>E-mail é requirido</p>}
+          {errors?.email?.type === 'validate' && <p className='errorMessage'>E-mail Invalido</p>}
         </div>
 
-        <ButtonCadastrar/>
+        <ButtonCadastrar />
+      </form>
+    </div>
+  )
+}
+
+const FormLogin = ({ handleSubmit, onSubmit, register, errors }) => {
+  return (
+    <div className="formContainer formCadastro">
+      <div className="titulo">
+        <FaLocationDot />
+        <h3>Login</h3>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <div className="input">
+          <label htmlFor="email">E-mail</label>
+          <input type="text" name="email"
+            id="email"
+            className={errors?.email && "inputError"}
+            {...register("email", {
+              required: true,
+              validate: (value) => validator.isEmail(value)
+            })}
+          />
+          {errors?.email?.type === 'required' && <p className='errorMessage'>E-mail é requirido</p>}
+          {errors?.email?.type === 'validate' && <p className='errorMessage'>E-mail Invalido</p>}
+        </div>
+
+        <div className="input">
+          <label htmlFor="senha">Senha</label>
+          <input
+            type="password"
+            name="senha"
+            id="senha"
+            placeholder="********"
+            className={errors?.senha && "inputError"}
+            {...register("senha", { required: true })}
+          />
+          {errors?.senha?.type === 'required' && <p className='errorMessage'>senha é requirido</p>}
+        </div>
+        <ButtonLogin />
       </form>
     </div>
   )
@@ -154,5 +449,6 @@ export {
   FormLocalizacao,
   FormContato,
   FormHorario,
-  FormCadastro
+  FormCadastro,
+  FormLogin
 }   

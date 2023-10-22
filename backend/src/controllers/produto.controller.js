@@ -1,7 +1,6 @@
 const { validationResult } = require('express-validator');
 const produtoService = require('../services/produto.service');
 const createError = require('http-errors');
-const { param } = require('../routes/produto.route');
 
 const create = async function(req, res, next){
     try {
@@ -9,15 +8,17 @@ const create = async function(req, res, next){
         if(!errors.isEmpty()){
             throw createError(422, {errors: errors.array()});
         }
+
         /* GAMBIARRA, PROCURAR ARRUMAR DEPOIS */
 /*         estabelecimento = await estabelecimentoRepository.findOneByWhere({usu_id: req.usuario_id});
         categoria = await categoriaRepository.findOneByWhere({est_id: estabelecimento.id}) */
         const response = await produtoService.create({
+            cat_id: req.params.cat_id,
             nome: req.body.nome,
-            valor: req.body.valor,
             descricao: req.body.descricao,
-            imagem: req.body.imagem,
-            cat_id: req.params.cat_id
+            valor: req.body.valor,
+            ativo: req.body.ativo,
+            imagem: req.file ? req.file.firebaseUrl: null,
         });
         if(response && response.message){
             throw response;
@@ -35,12 +36,11 @@ const update = async function(req, res, next){
         if(!errors.isEmpty()){
             throw createError(422, { errors: errors.array() })
         }
-        
         const response = await produtoService.update({
             nome: req.body.nome,
             valor: req.body.valor,
             descricao: req.body.descricao,
-            imagem: req.body.imagem
+            imagem: req.file ? req.file.firebaseUrl: null,
         }, req.params.id);
         if(response && response.message){
             throw response;

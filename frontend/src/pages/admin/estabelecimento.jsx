@@ -1,10 +1,12 @@
 import React from 'react'
-import Home from '../../components/adminComponents/Header'
+import Header from '../../components/adminComponents/Header'
+import Main from '../../components/adminComponents/MainEstabeelcimento';
 
 const Estabelecimento = () => {
   return (
     <section>
-      <Home/>
+      <Header/>
+      <Main/>
     </section>
   )
 }

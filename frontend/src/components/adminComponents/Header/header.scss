@@ -4,15 +4,22 @@
     @include flexBetween(row);
     background-color: $cor-primaria;
     height: 5rem;
+    padding: 0rem 3rem ;
     //box-shadow: 1rem black;
 
     .content{
         @include flexAlign(row);
         gap: 1rem;
+        height: 100%;
         color: $cor-text;
-        .logo{
-           
-
+        .logo {
+            @include flexCenter(row); // Centraliza a imagem horizontalmente
+            .link {
+              img {
+                width: 7rem;
+                margin-bottom: 7px;
+              }
+            }
         }
     
         nav{
@@ -30,8 +37,7 @@
                     }
 
                     .select{
-                        text-decoration: underline;
-                        color: $cor-text-secundaria;
+                        color: $cor-botao;
                         font-weight: 500;
                         font-size: 1.1rem;
                     }

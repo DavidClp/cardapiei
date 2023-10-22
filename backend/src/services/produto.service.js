@@ -19,8 +19,7 @@ const create = async function(produto){
     if(thereProduto){
         return createError(409,"Produto já existe");
     } */
-
-
+    console.log(produto)
     const produtoCriado = await produtoRepository.create(produto);
     return produtoCriado;
 }
@@ -30,7 +29,6 @@ const update =  async function(produto, id){
     if(!thereIsEstabelecimento){
         return createError(404, 'Produto não existe');
     }
-
     await produtoRepository.update(produto, id)
 
     return await produtoRepository.findById(id)

@@ -60,8 +60,7 @@ const findByEtbId = async function(req, res, next){
         if(!errors.isEmpty()){
             throw createError(422, {errors: errors.array()});
         }
-      
-        const response = await categoriaService.findByEstId();
+        const response = await categoriaService.findByEstId(req.params.id);
         if(response && response.message){
             throw response;
         }

@@ -32,6 +32,17 @@
                 padding: .5rem;
                 border: none;
                 width: 100%;
+                
+            }
+
+            .inputError{
+                outline: 1px solid rgb(255, 72, 72);
+            }
+
+            .errorMessage{
+                color: rgb(255, 72, 72);
+                font-size: 0.75rem;
+                margin-top: 8px;
             }
 
             textarea {
@@ -86,6 +97,16 @@
                 border: none;
                 width: 60%;
             }
+
+            .inputError{
+                outline: 1px solid rgb(255, 72, 72);
+            }
+
+            .errorMessage{
+                color: rgb(255, 72, 72);
+                font-size: 0.75rem;
+                margin-top: 8px;
+            }
         }
 
         .custom-file-input {
@@ -116,7 +137,8 @@
     .getContatos {
         @include flexCenter(row);
         padding: 0rem 1.5rem 0rem 1.5rem;
-        gap: 1rem;
+        gap: 2rem;
+        margin: 0 0 1rem 0;
         width: 100%;
 
         .tipo {

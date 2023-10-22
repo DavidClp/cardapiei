@@ -11,6 +11,12 @@ const update = async function(localizacao, id){
     });
 }
 
+const updateByEstId = async function(localizacao, id){
+    await Localizacao.update(localizacao, {
+        where: {est_id: id}
+    });
+}
+
 const findAll = async function(){
     const localizacaos = await Localizacao.findAll();
     return localizacaos;
@@ -35,6 +41,7 @@ const deletar = async function(id){
 module.exports = {
     create,
     update,
+    updateByEstId,
     findAll,
     findById,
     findOneByWhere,

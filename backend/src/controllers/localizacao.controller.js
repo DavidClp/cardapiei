@@ -30,7 +30,7 @@ const create = async function(req, res, next){
     }
 }
 
-const update = async function(req, res, next){
+const updateByEstId = async function(req, res, next){
     try {
         const errors = validationResult(req);
         if(!errors.isEmpty()){
@@ -106,6 +106,25 @@ const findById = async function(req, res, next){
     
 }
 
+const findByEstId = async function(req, res, next){
+    try {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            throw createError(422, {errors: errors.array()});
+        }
+        
+        const response = await localizacaoService.findByEstId(req.params.id);
+        if(response && response.message){
+            throw response;
+        }
+
+        res.send(response);
+    } catch (error) {
+        next(error);
+    }
+    
+}
+
 const deletar = async function(req, res, next){
     try {
         const errors = validationResult(req);
@@ -127,9 +146,10 @@ const deletar = async function(req, res, next){
 
 module.exports = {
     create,
-    update,
+    updateByEstId,
     findAll,
     findById,
     updateById,
     deletar,
+    findByEstId
 }

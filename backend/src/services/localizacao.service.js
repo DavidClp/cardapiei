@@ -8,14 +8,14 @@ const create = async function(localizacao){
 }
 
 const update =  async function(localizacao, id){
-    const thereIsEstabelecimento = await localizacaoRepository.findById(id)
+    /* const thereIsEstabelecimento = await localizacaoRepository.findById(id)
     if(!thereIsEstabelecimento){
         return createError(404, 'Localizacao não existe');
-    }
+    } */
 
-    await localizacaoRepository.update(localizacao, id)
+    await localizacaoRepository.updateByEstId(localizacao, id)
 
-    return await localizacaoRepository.findById(id)
+    return await localizacaoRepository.findOneByWhere({est_id: id})
 }
 
 const updateById =  async function(localizacao, id){
@@ -43,6 +43,15 @@ const findById = async function(id){
     return localizacao;
 }
 
+const findByEstId = async function(id){
+    const localizacao = await localizacaoRepository.findOneByWhere({est_id: id});
+
+/*     if(!localizacao){
+        return createError(404, "Localizacao não encontrado")
+    } */
+    return localizacao;
+}
+
 const deletar = async function(id){
     const localizacao = await localizacaoRepository.findById(id);
 
@@ -60,4 +69,5 @@ module.exports = {
     findAll,
     findById,
     deletar,
+    findByEstId
 }

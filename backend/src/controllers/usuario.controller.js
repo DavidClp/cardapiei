@@ -36,7 +36,7 @@ const login = async function(req, res, next){
         if(response && response.message){
             throw response;
         }
-
+        console.log(response.token)
         res.send(response)
     } catch (error) {
         return next(error);
@@ -51,12 +51,34 @@ const update = async function(req, res, next){
         }
         
         const response = await usuarioService.update({
-            nome: req.body.nome
+            nome: req.body.nome,
+            senha: req.body.senha,
+            email: req.body.email,
+            plano: req.body.plano,
+            dataUltimoPagamento: req.body.dataUltimoPagamento,
         }, req.params.id);
         if(response && response.message){
             throw response;
         }
+        res.send(response)
+    } catch (error) {
+        return next(error);
+    }
+}
 
+const updateSenhaUserAtual = async function(req, res, next){
+    try {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            throw createError(422, { errors: errors.array() })
+        }
+        
+        const response = await usuarioService.update({
+            senha: req.body.senha
+        }, req.usuario_id);
+        if(response && response.message){
+            throw response;
+        }
         res.send(response)
     } catch (error) {
         return next(error);
@@ -114,6 +136,7 @@ module.exports = {
     create,
     login,
     update,
+    updateSenhaUserAtual,
     findAll,
     findById,
     deletar,

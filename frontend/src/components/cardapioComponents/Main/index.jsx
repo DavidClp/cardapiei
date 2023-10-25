@@ -43,6 +43,7 @@ const Main = (props) => {
             data-categoria={categoria.nome} // Adicione um atributo data para identificar a categoria
           >
             <h2>{categoria.nome}</h2>
+            
             <div className="produtos">
               {categoria.Produtos.map((produto, index) => (
 
@@ -66,6 +67,7 @@ const Main = (props) => {
         ))}
       </section>
     </section>
+    
   )
 }
 

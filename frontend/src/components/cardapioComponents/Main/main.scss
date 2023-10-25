@@ -102,4 +102,73 @@
         }
 
     }
+
+}
+
+@include medium-screen {
+    .mainCardapio {
+        font-size: 80%;
+        padding: 1rem 1rem;
+        gap: 0;
+        overflow-x: hidden;
+
+        .categoria {
+            display: none;
+            width: 0%;
+        }
+
+        .menu {
+            @include flexCenter(column);
+            width: 100vw;
+
+            .menuCategoria {
+                width: 90%;
+ /*                margin-top: 1rem; */
+                .produtos {
+                    @include flexCenter(column);
+                    width: 100vw;
+
+                    .card {
+                        @include flexCenter(column);
+                        width: 100%;
+                        margin-bottom: .3rem;
+                        padding: .5rem;
+
+                        .content {
+                            @include flexCenter(row);
+                            gap: .6rem;
+
+                            img {
+                                width: 5rem;
+                                height: 5rem;
+                            }
+
+                            .texts {
+                                padding-right: 1rem;
+
+                                h3 {
+                                    &::first-letter {
+                                        text-transform: uppercase;
+                                    }
+                                }
+
+                                p {}
+                            }
+                        }
+
+                        .valor {
+                            background-color: $cor-secundaria;
+                            @include flexCenter(row);
+                            padding: 7px;
+
+                            border-radius: 5px;
+
+                            p {}
+                        }
+                    }
+                }
+
+            }
+        }
+    }
 }

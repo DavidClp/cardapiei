@@ -32,11 +32,13 @@ const Header = (props) => {
               <GrMapLocation className='icon' /> <p>{localizacao.endereco}, {localizacao.numero}, {localizacao.bairro} - {localizacao.cidade}</p></div>
           ))}
 
-          {estabelecimentoInfo?.horario_atendimentos?.map((horario, index) => (
-            <div className="horarios" key={index}>
-              <p className="horario"><BiTimeFive className='icon' /> {horario.dia} das {horario.hor_abre} às {horario.hor_fecha}</p>
-            </div>
-          ))}
+          <div className="horarios">
+            {estabelecimentoInfo?.horario_atendimentos?.map((horario, index) => (
+              <p className="horario"  key={index}>
+                <BiTimeFive className='icon' /> {horario.dia} das {horario.hor_abre} às {horario.hor_fecha}
+              </p>
+            ))}
+          </div>
         </div>
 
       </section>

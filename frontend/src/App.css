@@ -6,10 +6,16 @@
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
     text-decoration: none;
-    list-style: none;
-/*     overflow-x: hidden;
- */}
+    list-style: none;    
+
+ }
 
 html, body{
     height: 100%;
 }
+/* 
+@media screen and (max-width: 1090px) {
+    *{
+    }
+}
+  */

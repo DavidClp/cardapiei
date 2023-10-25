@@ -13,14 +13,16 @@ import axios from "axios"
 import { useForm } from 'react-hook-form'
 import { useQuery, useMutation } from "react-query";
 import validator from 'validator';
+import useEstIdStore from '../../../stores/estIdStore';
 const est_id = localStorage.getItem('est_id');
 const url = "http://localhost:8080/api/"
 
 const FormEstabelecimento = () => {
+  const { estIdStore } = useEstIdStore();
   const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm();
   //pegar dados ja registrados para mostrar
-  const { data, isLoading, refetch } = useQuery(["estabelecimento", est_id], () => {
-    return axios.get(`${url}estabelecimentos/geral/${est_id}`, {
+  const { data, isLoading, refetch } = useQuery(["estabelecimento", estIdStore], () => {
+    return axios.get(`${url}estabelecimentos/geral/${estIdStore}`, {
       headers: {
         'token': localStorage.getItem('token'),
       },
@@ -36,7 +38,7 @@ const FormEstabelecimento = () => {
     mutate(formData);
   }
   const { mutate } = useMutation((formData) => {
-    return axios.put(`${url}estabelecimentos/geral/${est_id}`, formData, {
+    return axios.put(`${url}estabelecimentos/geral/${estIdStore}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'token': localStorage.getItem('token'),

@@ -1,7 +1,7 @@
 require('dotenv').config({ path: __dirname+'/./../../../.env' })
 
 module.exports = {
-    development: {
+/*     development: {
         username: process.env.DATABASE_USER,
         password: process.env.PASSWORD,
         database: process.env.DATABASE,
@@ -13,7 +13,7 @@ module.exports = {
             timestamps: true
         },
         timezone: '-04:00'
-    }, 
+    },  */
     production: {
         username: process.env.PRODUCTION_DATABASE_USER,
         password: process.env.PRODUCTION_PASSWORD,

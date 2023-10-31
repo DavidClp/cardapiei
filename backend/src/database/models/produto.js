@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     descricao: DataTypes.STRING,
     valor: DataTypes.DECIMAL,
     imagem: DataTypes.STRING,
-    ativo: DataTypes.INTEGER
+    ativo: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Produto',

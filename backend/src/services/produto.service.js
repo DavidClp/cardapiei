@@ -3,7 +3,6 @@ const createError = require('http-errors')
 const multer = require('multer');
 
 const storage = multer.diskStorage({
-    
     destination: function (req, file, cb) {
       cb(null, 'uploads/'); // Pasta onde as imagens serão armazenadas
     },
@@ -15,23 +14,27 @@ const storage = multer.diskStorage({
   const upload = multer({ storage: storage });
 
 const create = async function(produto){
-   /*  const thereProduto = await produtoRepository.findOneByWhere({nome: produto.nome});
-    if(thereProduto){
-        return createError(409,"Produto já existe");
-    } */
-    console.log(produto)
     const produtoCriado = await produtoRepository.create(produto);
     return produtoCriado;
 }
 
 const update =  async function(produto, id){
-    const thereIsEstabelecimento = await produtoRepository.findById(id)
-    if(!thereIsEstabelecimento){
+    const thereIsProduto = await produtoRepository.findById(id)
+    if(!thereIsProduto){
         return createError(404, 'Produto não existe');
     }
     await produtoRepository.update(produto, id)
 
-    return await produtoRepository.findById(id)
+    /* return await produtoRepository.findById(id) */
+}
+
+const updateSituacao =  async function(produto, id){
+    const thereIsProduto = await produtoRepository.findById(id)
+    if(!thereIsProduto){
+        return createError(404, 'Produto não existe');
+    }
+    await produtoRepository.update(produto, id)
+/*     return await produtoRepository.findById(id) */
 }
 
 const findAll = async function(){
@@ -44,7 +47,7 @@ const findById = async function(id){
 
     if(!produto){
         return createError(404, "Produto não encontrado")
-    }
+    }  
     return produto;
 }
 
@@ -53,6 +56,7 @@ const findByCatId = async function(cat_id){
     if(!produtos){
         return createError(404, "Produtos não encontrado")
     }
+
     return produtos;
 }
 
@@ -73,4 +77,5 @@ module.exports = {
     findAll,
     findById,
     deletar,
+    updateSituacao,
 }

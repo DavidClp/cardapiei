@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import './main.scss';
 import { FormCategoria } from '../../basicosComponents/FormsAdminCardapio';
 import { CardProduto } from '../../basicosComponents/CardAdminCardapio';
-import { FormProduto } from '../../basicosComponents/FormsAdminCardapio';
 
 import axios from "axios"
 import { useForm } from 'react-hook-form'
 import { useQuery, useMutation } from "react-query";
+import { urlApi } from '../../../constants/urlApi';
 const est_id = localStorage.getItem('est_id');
-const url = "http://localhost:8080/api/"
-
+const url = urlApi
 
 const Main = () => {
 
   const { register, handleSubmit, reset } = useForm();
   const onSubmit = (data) => {
+    console.log(data)
     mutate(data);
   }
 
@@ -64,8 +64,8 @@ const Main = () => {
 
 
   return (
-    <section className='adminCardapioMain'>
-      <sectio className="adminCategorias">
+    <section className='flex flex-col gap-6 lg:flex-row px-3 lg:px-11 py-6 bg-bgPrimary'>
+      <section className="flex items-center justify-center w-full mt-20 lg-mt-0 lg:w-[40vw] drop-shadow-md">
         <FormCategoria
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
@@ -75,9 +75,9 @@ const Main = () => {
           data={data}
           refetch={refetch}
         />
-      </sectio>
+      </section>
 
-      <section className="adminProdutos">
+      <section className="flex items-center justify-center w-full lg:w-[60vw] drop-shadow-md">
         {data?.map((categoria) => (
           <CardProduto categoria={categoria} refetch={refetch}/>
         ))}

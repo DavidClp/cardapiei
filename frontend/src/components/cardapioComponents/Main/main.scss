@@ -1,10 +1,11 @@
 @import '../../../styles/variables';
 
+
 .mainCardapio {
     padding: 3rem 15% 3rem 15%;
     @include flexJustify(row);
     gap: 2rem;
-    background-color: $cor-secundaria;
+  /*   background-color: rgb(81, 80, 80); */
 
     .categorias {
         width: 30%;
@@ -55,51 +56,7 @@
             }
         }
 
-        .produtos {
-
-            .card {
-                background-color: $cor-primaria;
-                margin-bottom: 1rem;
-                padding: .5rem 1rem .5rem 1rem;
-                border-radius: 5px;
-                @include flexBetween(row);
-
-                .content {
-                    @include flexCenter(row);
-                    gap: 1rem;
-
-                    img {
-                        width: 6rem;
-                        height: 6rem;
-                        object-fit: cover;
-                        border-radius: 3px;
-                    }
-
-                    .texts {
-                        padding-right: 1rem;
-
-                        h3 {
-                            &::first-letter {
-                                text-transform: uppercase;
-                            }
-                        }
-
-                        p {}
-                    }
-                }
-
-
-                .valor {
-                    background-color: $cor-secundaria;
-                    @include flexCenter(row);
-                    padding: 7px;
-
-                    border-radius: 5px;
-
-                    p {}
-                }
-            }
-        }
+   
 
     }
 
@@ -125,47 +82,7 @@
                 width: 90%;
  /*                margin-top: 1rem; */
                 .produtos {
-                    @include flexCenter(column);
-                    width: 100vw;
-
-                    .card {
-                        @include flexCenter(column);
-                        width: 100%;
-                        margin-bottom: .3rem;
-                        padding: .5rem;
-
-                        .content {
-                            @include flexCenter(row);
-                            gap: .6rem;
-
-                            img {
-                                width: 5rem;
-                                height: 5rem;
-                            }
-
-                            .texts {
-                                padding-right: 1rem;
-
-                                h3 {
-                                    &::first-letter {
-                                        text-transform: uppercase;
-                                    }
-                                }
-
-                                p {}
-                            }
-                        }
-
-                        .valor {
-                            background-color: $cor-secundaria;
-                            @include flexCenter(row);
-                            padding: 7px;
-
-                            border-radius: 5px;
-
-                            p {}
-                        }
-                    }
+         
                 }
 
             }

@@ -1,18 +1,21 @@
-import React, { useState } from 'react'
-import './forms.scss';
-import { ButtonAvancar, ButtonForm, ButtonRemove, ButtonEfeite } from '../Buttons';
-import Modal from '../Modal'
-import { FormProduto } from '../../basicosComponents/FormsAdminCardapio';
-import { ButtonAdd } from '../Buttons';
+import React, { useState } from "react";
+import "./forms.scss";
+import {
+  ButtonRemove,
+  ButtonEfeite,
+  ButtonAtivo,
+  ButtonInativo,
+} from "../Buttons";
+import Modal from "../Modal";
+import { FormProduto } from "../../basicosComponents/FormsAdminCardapio";
 
-import { TbCategory } from 'react-icons/tb';
-import { IoFastFoodOutline } from 'react-icons/io5';
-
-import axios from "axios"
-import { useForm } from 'react-hook-form'
+import axios from "axios";
+import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-const est_id = localStorage.getItem('est_id');
-const url = "http://localhost:8080/api/"
+import { formatarParaBRL } from "../../../utils/formataParaBRL";
+
+const est_id = localStorage.getItem("est_id");
+const url = "http://localhost:8080/api/";
 
 const CardProduto = ({ categoria, refetch }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,7 +33,7 @@ const CardProduto = ({ categoria, refetch }) => {
     } else {
       reset({
         nome: null,
-        valor:null,
+        valor: null,
         descricao: null,
       });
     }
@@ -40,63 +43,74 @@ const CardProduto = ({ categoria, refetch }) => {
     setIsModalOpen(false);
   };
 
-  const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = (dataForm) => {
     const formData = new FormData();
-    formData.append('nome', dataForm.nome);
-    formData.append('valor', dataForm.valor);
-    formData.append('descricao', dataForm.descricao);
-    formData.append('imagem', dataForm.imagem[0]);
-    formData.append('ativo', 1);
+    formData.append("nome", dataForm.nome);
+    formData.append("valor", dataForm.valor);
+    formData.append("descricao", dataForm.descricao);
+    formData.append("imagem", dataForm.imagem[0]);
+    /*     formData.append('ativo', 1); */
     if (dataForm.produtoId) {
-      formData.append('produtoId', dataForm.produtoId); // Certifique-se de que o campo seja nomeado corretamente
+      formData.append("produtoId", dataForm.produtoId); // Certifique-se de que o campo seja nomeado corretamente
       putMutate(formData);
     } else {
       mutate(formData);
     }
-  }
-  const { mutate } = useMutation((formData) => {
-    return axios.post(`${url}produtos/${categoria.id}`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'token': localStorage.getItem('token'),
-      },
-    })
-      .then((response) => response.data);
-  },
+  };
+  const { mutate } = useMutation(
+    (formData) => {
+      return axios
+        .post(`${url}produtos/${categoria.id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            token: localStorage.getItem("token"),
+          },
+        })
+        .then((response) => response.data);
+    },
     {
       onSuccess: (responseData) => {
         setIsModalOpen(false);
         refetch();
-      }
+      },
     }
   );
 
-  const { mutate: putMutate } = useMutation((formData) => {
-      return axios.put(`${url}produtos/${formData.get('produtoId')}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'token': localStorage.getItem('token'),
-        },
-      }).then((response) => response.data);
+  const { mutate: putMutate } = useMutation(
+    (formData) => {
+      return axios
+        .put(`${url}produtos/${formData.get("produtoId")}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            token: localStorage.getItem("token"),
+          },
+        })
+        .then((response) => response.data);
     },
     {
       onError: (error) => {
-        console.error('Erro editar produto', error);
+        console.error("Erro editar produto", error);
       },
       onSuccess: (responseData) => {
         setIsModalOpen(false);
         refetch();
       },
     }
-  );  
+  );
 
   const { mutate: deleteProduto } = useMutation(
     (produtoId) =>
       axios.delete(`${url}produtos/${produtoId}`, {
         headers: {
-          'token': localStorage.getItem('token'),
+          token: localStorage.getItem("token"),
         },
       }),
     {
@@ -104,7 +118,37 @@ const CardProduto = ({ categoria, refetch }) => {
         refetch();
       },
       onError: (error) => {
-        console.error('Erro ao excluir o produto', error);
+        console.error("Erro ao excluir o produto", error);
+      },
+    }
+  );
+
+  const handleSituacao = (produto) => {
+    let ativo = null;
+    produto.ativo === 1 ? (ativo = 0) : (ativo = 1);
+    putSituacao({
+      id: produto.id,
+      ativo: ativo,
+    });
+  };
+
+  const { mutate: putSituacao } = useMutation(
+    (formData) => {
+      return axios
+        .put(`${url}produtos/situacao/${formData.id}`, formData, {
+          headers: {
+            "Content-Type": "application/json",
+            token: localStorage.getItem("token"),
+          },
+        })
+        .then((response) => response.data);
+    },
+    {
+      onError: (error) => {
+        console.error("Erro ativar/inativar produtos", error);
+      },
+      onSuccess: (responseData) => {
+        refetch();
       },
     }
   );
@@ -116,18 +160,26 @@ const CardProduto = ({ categoria, refetch }) => {
       </div>
 
       {categoria?.Produtos?.map((produto) => (
-        <div className='cardProduto'>
-          <div className='cardContent' onClick={() => openModal(produto)}>
+        <div className="cardProduto">
+          <div className="cardContent" onClick={() => openModal(produto)}>
             {produto.imagem && <img src={produto.imagem} alt="" />}
             <p>{produto.nome}</p>
-            <p>R$ {produto.valor}</p>
+            <p>{formatarParaBRL(parseFloat(produto.valor))}</p>
           </div>
+          {produto.ativo === 1 ? (
+            <ButtonAtivo onClick={() => handleSituacao(produto)} />
+          ) : (
+            <ButtonInativo onClick={() => handleSituacao(produto)} />
+          )}
           <ButtonRemove onClick={() => deleteProduto(produto.id)} />
         </div>
       ))}
 
-      <div className='containerButtonCardapio'>
-        <ButtonEfeite texto={"Adicionar Item"} onClick={() => openModal(null)} />
+      <div className="containerButtonCardapio">
+        <ButtonEfeite
+          texto={"Adicionar Item"}
+          onClick={() => openModal(null)}
+        />
       </div>
 
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
@@ -143,6 +195,4 @@ const CardProduto = ({ categoria, refetch }) => {
   );
 };
 
-export {
-  CardProduto,
-}  
+export { CardProduto };

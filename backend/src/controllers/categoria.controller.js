@@ -13,7 +13,8 @@ const create = async function(req, res, next){
         estabelecimento = await estabelecimentoRepository.findOneByWhere({usu_id: req.usuario_id});
         const response = await categoriaService.create({
             nome: req.body.nome,
-            est_id: estabelecimento.id
+            est_id: estabelecimento.id,
+            ativo: 1,
         });
         if(response && response.message){
             throw response;
@@ -34,6 +35,26 @@ const update = async function(req, res, next){
         
         const response = await categoriaService.update({
             nome: req.body.nome
+        }, req.params.id);
+        if(response && response.message){
+            throw response;
+        }
+
+        res.send(response)
+    } catch (error) {
+        return next(error);
+    }
+}
+
+const updateSituacao = async function(req, res, next){
+    try {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            throw createError(422, { errors: errors.array() })
+        }
+        
+        const response = await categoriaService.updateSituacao({
+            ativo: req.body.ativo
         }, req.params.id);
         if(response && response.message){
             throw response;
@@ -110,6 +131,7 @@ const deletar = async function(req, res, next){
 module.exports = {
     create,
     update,
+    updateSituacao,
     findAll,
     findByEtbId,
     findById,

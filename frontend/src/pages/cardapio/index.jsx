@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import "./cardapio.scss";
 import Header from '../../components/cardapioComponents/Header';
 import Main from '../../components/cardapioComponents/Main';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import HeaderMobile from '../../components/cardapioComponents/HeaderMobile';
 
 const Cardapio = () => {
   const { estabelecimento } = useParams();
@@ -24,14 +24,16 @@ const Cardapio = () => {
    // Desestruture o objeto estabelecimentoCardapio para obter apenas o estabelecimento
    const { Categoria, ...estabelecimentoInfo } = estabelecimentoCardapio;
 
-  return (
+/*    console.log(categorias.Produtos);
+ */  return (
     <>
       {isLoading ? (
         <p>Carregando...</p>
       ) : (
         <>
+          <HeaderMobile estabelecimentoCardapio={estabelecimentoCardapio}/>
           <Header estabelecimentoInfo={estabelecimentoInfo}/>
-          <Main categoriaComProdutos={estabelecimentoCardapio.Categoria} />
+          <Main categoriaComProdutos={Categoria} />
         </>
       )}
     </>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link, useLocation } from 'react-router-dom';
 import logo from "../../../assets/logo.png"
 import { ButtonVerCardapio } from '../../basicosComponents/Buttons/'
@@ -24,7 +24,7 @@ const Header = () => {
     })
 
   return (
-    <section className='header'>
+    <section className='header23 hidden lg:hidden'>
       <div className="content">
         <div className="logo">
           <Link to="/admin/" className='link'>

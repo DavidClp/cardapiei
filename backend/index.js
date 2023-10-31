@@ -16,8 +16,13 @@ const horarioRoute = require('./src/routes/horario.route');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(cors({
+/* app.use(cors({
     origin: 'http://localhost:3000', // Altere para o domínio do seu frontend
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Habilitar cookies, se necessário
+})); */
+app.use(cors({
+    origin: '*', // Altere para o domínio do seu frontend
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // Habilitar cookies, se necessário
 }));

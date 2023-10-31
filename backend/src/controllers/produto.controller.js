@@ -17,7 +17,7 @@ const create = async function(req, res, next){
             nome: req.body.nome,
             descricao: req.body.descricao,
             valor: req.body.valor,
-            ativo: req.body.ativo,
+            ativo: 1,
             imagem: req.file ? req.file.firebaseUrl: null,
         });
         if(response && response.message){
@@ -41,6 +41,24 @@ const update = async function(req, res, next){
             valor: req.body.valor,
             descricao: req.body.descricao,
             imagem: req.file ? req.file.firebaseUrl: null,
+        }, req.params.id);
+        if(response && response.message){
+            throw response;
+        }
+
+        res.send(response)
+    } catch (error) {
+        return next(error);
+    }
+}
+const updateSituacao = async function(req, res, next){
+    try {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            throw createError(422, { errors: errors.array() })
+        }
+        const response = await produtoService.updateSituacao({
+            ativo: req.body.ativo
         }, req.params.id);
         if(response && response.message){
             throw response;
@@ -119,6 +137,7 @@ const deletar = async function(req, res, next){
 module.exports = {
     create,
     update,
+    updateSituacao,
     findByCatId,
     findAll,
     findById,

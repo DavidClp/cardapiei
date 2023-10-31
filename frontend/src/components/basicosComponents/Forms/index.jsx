@@ -21,8 +21,8 @@ const FormEstabelecimento = () => {
   const { estIdStore } = useEstIdStore();
   const { register, handleSubmit, reset, getValues, formState: { errors } } = useForm();
   //pegar dados ja registrados para mostrar
-  const { data, isLoading, refetch } = useQuery(["estabelecimento", estIdStore], () => {
-    return axios.get(`${url}estabelecimentos/geral/${estIdStore}`, {
+  const { data, isLoading, refetch } = useQuery(["estabelecimento", est_id], () => {
+    return axios.get(`${url}estabelecimentos/geral/${est_id}`, {
       headers: {
         'token': localStorage.getItem('token'),
       },
@@ -38,7 +38,7 @@ const FormEstabelecimento = () => {
     mutate(formData);
   }
   const { mutate } = useMutation((formData) => {
-    return axios.put(`${url}estabelecimentos/geral/${estIdStore}`, formData, {
+    return axios.put(`${url}estabelecimentos/geral/${est_id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
         'token': localStorage.getItem('token'),
@@ -48,6 +48,7 @@ const FormEstabelecimento = () => {
   },
     {
       onSuccess: (responseData) => {
+        window.alert("sucesso")
         const dados = responseData;
       }
     }

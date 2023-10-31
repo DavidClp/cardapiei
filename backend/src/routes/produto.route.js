@@ -22,6 +22,8 @@ router.get('/geral/:id', veriftJWT, produtoValidator.findById(), produtoControll
 
 router.put('/:id', veriftJWT, Multer.single("imagem"), uploadImagem, produtoController.update);
 
+router.put('/situacao/:id', veriftJWT, produtoController.updateSituacao);
+
 router.delete('/:id', veriftJWT, produtoValidator.deletar(), produtoController.deletar);
 
 module.exports = router;

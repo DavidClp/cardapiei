@@ -1,6 +1,6 @@
 import React from 'react'
 import './buttons.scss';
-import { BsBoxArrowUpRight, BsWhatsapp } from 'react-icons/bs';
+import { BsBoxArrowUpRight, BsEye, BsEyeSlash, BsWhatsapp } from 'react-icons/bs';
 import { BiSolidMessageSquareAdd } from 'react-icons/bi';
 import { GrPrevious } from 'react-icons/gr';
 import { MdDeleteForever } from 'react-icons/md';
@@ -81,7 +81,7 @@ const ButtonVerCardapio = ({url}) => {
     window.open(url, '_blank');
   };
   return (
-    <button type="submit" className='buttonVerCardapio' onClick={handleClick}>
+    <button type="submit" className='flex items-center gap-1 py-2 px-5 bg-primary text-corTextSecundaria rounded-md text-sm' onClick={handleClick}>
       <BsBoxArrowUpRight className="icon"/>
       Ver o cardapio
     </button>
@@ -93,6 +93,22 @@ const ButtonRemove = ({ onClick }) => {
   return (
     <button className='buttonRemove' onClick={ onClick }>
       <MdDeleteForever className="icon"/>
+    </button>
+  )
+}
+
+const ButtonAtivo = ({ onClick }) => {
+  return (
+    <button className='buttonRemove' onClick={ onClick }>
+      <BsEye className="icon"/>
+    </button>
+  )
+}
+
+const ButtonInativo = ({ onClick }) => {
+  return (
+    <button className='buttonRemove' onClick={ onClick }>
+      <BsEyeSlash className="icon"/>
     </button>
   )
 }
@@ -138,5 +154,7 @@ export {
   ButtonEfeite,
   ButtonSimples,
   ButtonComIcon,
-  ButtonDivulgacao
+  ButtonDivulgacao,
+  ButtonAtivo,
+  ButtonInativo
 } 

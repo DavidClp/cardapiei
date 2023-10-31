@@ -12,7 +12,9 @@ router.get('/geral/:id', veriftJWT, categoriaValidator.findById(), categoriaCont
 
 router.get('/:id', veriftJWT,  categoriaController.findByEtbId);
 
-router.put('/:id', veriftJWT, categoriaValidator.update(), categoriaController.update);
+router.put('/:id', veriftJWT, categoriaController.update);
+
+router.put('/situacao/:id', veriftJWT,  categoriaController.updateSituacao);
 
 router.delete('/:id', veriftJWT, categoriaValidator.deletar(), categoriaController.deletar);
 

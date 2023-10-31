@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     est_id: DataTypes.INTEGER,
     nome: DataTypes.STRING,
     deletedAt: DataTypes.DATE,
+    ativo: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Categoria',

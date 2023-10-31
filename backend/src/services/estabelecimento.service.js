@@ -8,7 +8,7 @@ const create = async function(estabelecimento){
     estabelecimento.url = criarURL.criarURL(estabelecimento.nome, thereEst);
 
     const estabelecimentoCriado = await estabelecimentoRepository.create(estabelecimento);
-    return estabelecimentoCriado;
+    /* return estabelecimentoCriado; */
 }
 
 const update =  async function(estabelecimento, usu_id){
@@ -19,7 +19,7 @@ const update =  async function(estabelecimento, usu_id){
     
     await estabelecimentoRepository.update(estabelecimento, usu_id)
 
-    return await estabelecimentoRepository.findOneByWhere(usu_id);
+  /*   return await estabelecimentoRepository.findOneByWhere(usu_id); */
 }
 
 const updateById =  async function(estabelecimento, id){
@@ -31,7 +31,7 @@ const updateById =  async function(estabelecimento, id){
 
     await estabelecimentoRepository.updateById(estabelecimento, id)
 
-    return await estabelecimentoRepository.findById(id)
+ /*    return await estabelecimentoRepository.findById(id) */
 }
 
 const findAll = async function(){
@@ -50,7 +50,7 @@ const findById = async function(id){
 }
 
 const findByUserId = async function(id){
-    console.log("ID usuario: "+id);
+    console.log("ID usuario: " + id);
     const estabelecimento = await estabelecimentoRepository.findByWhereComDados({usu_id: id});
     if(!estabelecimento){
         return createError(404, "Estabelecimento não encontrado")
@@ -59,11 +59,11 @@ const findByUserId = async function(id){
 }
 
 const findByUrl = async function(estabelecimentoUrl){
-    
     const estabelecimento = await estabelecimentoRepository.findByWhereComTudo({url: estabelecimentoUrl});
     if(!estabelecimento){
         return createError(404, "Estabelecimento não encontrado")
     }
+
     return estabelecimento;
 }
 
@@ -74,7 +74,7 @@ const deletar = async function(id){
         return createError(404, "Estabelecimento não encontrado")
     }
     await estabelecimentoRepository.deletar(id);
-    return estabelecimento;
+   /*  return estabelecimento; */
 }
 
 module.exports = {

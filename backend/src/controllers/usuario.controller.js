@@ -10,7 +10,6 @@ const create = async function(req, res, next){
         }
 
         const response = await usuarioService.create(req.body);
-        console.log(response.token)
         if(response && response.message){
             throw response;
         }

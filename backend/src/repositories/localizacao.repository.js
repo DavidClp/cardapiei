@@ -6,7 +6,15 @@ const create = async function(localizacao){
 }
 
 const update = async function(localizacao, id){
-    await Localizacao.update(localizacao, {
+    const fieldsToUpdate = {
+        cep: localizacao.cep ?? undefined,
+        endereco: localizacao.endereco ?? undefined,
+        numero: localizacao.numero ?? undefined,
+        bairro: localizacao.bairro ?? undefined,
+        cidade: localizacao.cidade ?? undefined,
+
+      };
+    await Localizacao.update(fieldsToUpdate, {
         where: {id: id}
     });
 }

@@ -141,7 +141,6 @@ const findByUrl = async function(req, res, next){
         }
         
         const response = await estabelecimentoService.findByUrl(req.params.estabelecimento);
-        
         if(response && response.message){
             throw response;
         }

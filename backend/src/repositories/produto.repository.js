@@ -5,35 +5,19 @@ const create = async function(produto){
     return produtoCriado;
 }
 
-const update = async function(produto, id){
-    const fieldsToUpdate = {};
-
-    if (produto.nome !== null) {
-        fieldsToUpdate.nome = produto.nome;
-    }
-
-    if (produto.valor !== null) {
-        fieldsToUpdate.valor = produto.valor;
-    }
-
-    if (produto.descricao !== null) {
-        fieldsToUpdate.descricao = produto.descricao;
-    }
-
-    if (produto.imagem !== null) {
-        fieldsToUpdate.imagem = produto.imagem;
-    }
-
-    // Verifique se há campos para atualizar
- /*    if (Object.keys(fieldsToUpdate).length === 0) {
-        return "Nenhum campo para atualizar.";
-    } */
-
+const update = async function(produto, id) {
+    const fieldsToUpdate = {
+      nome: produto.nome ?? undefined,
+      valor: produto.valor ?? undefined,
+      descricao: produto.descricao ?? undefined,
+      imagem: produto.imagem ?? undefined,
+      ativo: produto.ativo ?? undefined,
+    };
+  
     await Produto.update(fieldsToUpdate, {
-        where: {id: id}
+      where: { id: id },
     });
-}
-
+  };
 const findAll = async function(){
     const produtos = await Produto.findAll();
     return produtos;

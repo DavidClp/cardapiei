@@ -1,21 +1,39 @@
-import React, { useState } from 'react'
-import './forms.scss';
-import { ButtonAvancar, ButtonLogin, ButtonCadastrar, ButtonForm, ButtonRemove, ButtonSimples, buttonComIcon, ButtonComIcon } from '../Buttons';
-import { useMutation } from 'react-query'; // Importe useMutation do react-query
+import React, { useState } from "react";
+import "./forms.scss";
+import {
+  ButtonAvancar,
+  ButtonLogin,
+  ButtonCadastrar,
+  ButtonForm,
+  ButtonRemove,
+  ButtonSimples,
+  buttonComIcon,
+  ButtonComIcon,
+  ButtonAtivo,
+  ButtonInativo,
+} from "../Buttons";
+import { useMutation } from "react-query"; // Importe useMutation do react-query
 
-import { useForm } from 'react-hook-form'
-import { ButtonAdd } from '../Buttons';
-import { IoIosSave } from 'react-icons/io';
-import axios from "axios"
+import { useForm } from "react-hook-form";
+import { ButtonAdd } from "../Buttons";
+import { IoIosSave } from "react-icons/io";
+import axios from "axios";
 import { useQuery } from "react-query";
-import { TbCategory } from 'react-icons/tb';
-import { MdCancel } from 'react-icons/md';
-const url = "http://localhost:8080/api/"
+import { TbCategory } from "react-icons/tb";
+import { MdCancel } from "react-icons/md";
+import InputValor from "./components/InputValor";
+const url = "http://localhost:8080/api/";
 
-const FormProduto = ({ handleSubmit, onSubmit, register, errors, selectedProduto }) => {
+const FormProduto = ({
+  handleSubmit,
+  onSubmit,
+  register,
+  errors,
+  selectedProduto,
+}) => {
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
 
-  //pega a imagem selecionada 
+  //pega a imagem selecionada
   const handleImagemChange = (e) => {
     const arquivoSelecionado = e.target.files[0];
     if (arquivoSelecionado) {
@@ -28,14 +46,29 @@ const FormProduto = ({ handleSubmit, onSubmit, register, errors, selectedProduto
       reader.readAsDataURL(arquivoSelecionado);
     }
   };
-  //retira a imagem selecionada 
+  //retira a imagem selecionada
   const handleRemoverImagem = () => {
     setImagemSelecionada(null);
   };
 
+  const [valor, setValor] = useState("");
+  const [erro, setErro] = useState("");
+
+  const handleValorChange = (event) => {
+    const valorDigitado = event.target.value;
+
+    if (valorDigitado.includes(',')) {
+      setErro("Use pontos em vez de vírgulas para valores decimais.");
+    } else {
+      setErro("");
+    }
+
+    setValor(valorDigitado);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="form">
-      {selectedProduto?.id &&
+      {selectedProduto?.id && (
         <input
           type="hidden"
           name="produtoId"
@@ -43,7 +76,7 @@ const FormProduto = ({ handleSubmit, onSubmit, register, errors, selectedProduto
           value={selectedProduto.id}
           {...register("produtoId")}
         />
-      }
+      )}
       <div className="input">
         <label htmlFor="nome">Nome do produto</label>
         <input
@@ -55,21 +88,43 @@ const FormProduto = ({ handleSubmit, onSubmit, register, errors, selectedProduto
           defaultValue={selectedProduto?.nome || ""}
           {...register("nome", { required: true })}
         />
-        {errors?.nome?.type === 'required' && <p className='errorMessage'>Nome é requirido</p>}
+        {errors?.nome?.type === "required" && (
+          <p className="errorMessage">Nome é requirido</p>
+        )}
       </div>
 
-      <div className="input">
-        <label htmlFor="nome">Valor</label>
+ {/*      <div className="input">
+        <label htmlFor="valor">Valor</label>
         <input
           type="text"
           name="valor"
           id="valor"
-          placeholder="Exemplo: Pizza Portuguesa"
+          placeholder="0.00"
           className={errors?.valor && "inputError"}
           defaultValue={selectedProduto?.valor || ""}
           {...register("valor")}
         />
+        {errors?.valor?.type === "required" && (
+          <p className="errorMessage">Nome é requirido</p>
+        )}
+      </div> */}
+      
+
+      <div className="input">
+        <label htmlFor="valor">Valor (use ponto para marcar os centavos inves de virgula. exemplo: 10.99)</label>
+        <input
+          type="text"
+          name="valor"
+  /*         value={valor}
+          onChange={handleValorChange} */
+          placeholder="0.00"
+          className={errors?.valor && "inputError"}
+          defaultValue={selectedProduto?.valor || ""}
+          {...register("valor")}
+        />
+      {erro && <p className="errorMessage">{erro}</p>}
       </div>
+
 
       <div className="input">
         <label htmlFor="descricao">Descrição do produto</label>
@@ -94,7 +149,8 @@ const FormProduto = ({ handleSubmit, onSubmit, register, errors, selectedProduto
             <label className="FileContainer" htmlFor="customFile">
               Clique Aqui para Adicionar uma imagem
             </label>
-          </div>)}
+          </div>
+        )}
 
         {imagemSelecionada ? (
           <label className="customFileLabel" onClick={handleRemoverImagem}>
@@ -105,7 +161,9 @@ const FormProduto = ({ handleSubmit, onSubmit, register, errors, selectedProduto
             Adicionar
           </label>
         )}
-        <input type="file" className="custom-file-input"
+        <input
+          type="file"
+          className="custom-file-input"
           id="customFile"
           name="file"
           {...register("imagem")}
@@ -118,10 +176,18 @@ const FormProduto = ({ handleSubmit, onSubmit, register, errors, selectedProduto
   );
 };
 
-const FormCategoria = ({ handleSubmit, onSubmit, register, deleteCategoria, isLoading, data, refetch }) => {
+const FormCategoria = ({
+  handleSubmit,
+  onSubmit,
+  register,
+  deleteCategoria,
+  isLoading,
+  data,
+  refetch,
+}) => {
   const [isOpenEditCategoria, setIsOpenEditCategoria] = useState(false);
   const [editCategoriaId, setEditCategoriaId] = useState(null);
-  const [editCategoriaNome, setEditCategoriaNome] = useState('');
+  const [editCategoriaNome, setEditCategoriaNome] = useState("");
 
   const openEditCategoria = (categoria) => {
     setIsOpenEditCategoria(true);
@@ -132,7 +198,7 @@ const FormCategoria = ({ handleSubmit, onSubmit, register, deleteCategoria, isLo
   const cancelEditCategoria = () => {
     setIsOpenEditCategoria(false);
     setEditCategoriaId(null);
-    setEditCategoriaNome('');
+    setEditCategoriaNome("");
   };
 
   const handleEditSubmit = (event) => {
@@ -148,22 +214,60 @@ const FormCategoria = ({ handleSubmit, onSubmit, register, deleteCategoria, isLo
     cancelEditCategoria();
   };
 
-  const { mutate: putMutate } = useMutation((formData) => {
-    return axios.put(`${url}categorias/${formData.id}`, formData, {
-      headers: {
-        'Content-Type': 'application/json',
-        'token': localStorage.getItem('token'),
+  const { mutate: putMutate } = useMutation(
+    (formData) => {
+      return axios
+        .put(`${url}categorias/${formData.id}`, formData, {
+          headers: {
+            "Content-Type": "application/json",
+            token: localStorage.getItem("token"),
+          },
+        })
+        .then((response) => response.data);
+    },
+    {
+      onError: (error) => {
+        console.error("Erro editar categorias", error);
       },
-    }).then((response) => response.data);
-  }, {
-    onError: (error) => {
-      console.error('Erro editar categorias', error);
+      onSuccess: (responseData) => {
+        /* setIsModalOpen(false); */
+        refetch();
+      },
+    }
+  );
+
+  const handleSituacao = (categoria) => {
+    /* event.preventDefault(); */
+    console.log(categoria.ativo)
+    let ativo = null;
+    categoria.ativo === 1 ? ativo = 0 : ativo = 1;
+    putSituacao({
+      id: categoria.id,
+      ativo: ativo,
+    });
+
+  };
+
+  const { mutate: putSituacao } = useMutation(
+    (formData) => {
+      return axios
+        .put(`${url}categorias/situacao/${formData.id}`, formData, {
+          headers: {
+            "Content-Type": "application/json",
+            token: localStorage.getItem("token"),
+          },
+        })
+        .then((response) => response.data);
     },
-    onSuccess: (responseData) => {
-      /* setIsModalOpen(false); */
-      refetch()
-    },
-  });
+    {
+      onError: (error) => {
+        console.error("Erro ativar/inativar categorias", error);
+      },
+      onSuccess: (responseData) => {
+        refetch();
+      },
+    }
+  );
 
   return (
     <div className="formContainer">
@@ -174,7 +278,12 @@ const FormCategoria = ({ handleSubmit, onSubmit, register, deleteCategoria, isLo
 
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="inputSelect">
-          <input type="text" name="categoria" id="categoria" {...register("nome")} />
+          <input
+            type="text"
+            name="categoria"
+            id="categoria"
+            {...register("nome")}
+          />
           <ButtonAdd />
         </div>
       </form>
@@ -185,15 +294,20 @@ const FormCategoria = ({ handleSubmit, onSubmit, register, deleteCategoria, isLo
             {isOpenEditCategoria && editCategoriaId === categoria.id ? (
               <form onSubmit={handleEditSubmit} className="form">
                 <div className="inputSelect">
-                <input type="text" value={editCategoriaNome} onChange={(e) => setEditCategoriaNome(e.target.value)} />
-                <ButtonComIcon >
-                  <IoIosSave className="icon" />
-                </ButtonComIcon>
-                <ButtonComIcon onClick={cancelEditCategoria}>
-                  <MdCancel className="icon" />
-                </ButtonComIcon>
-                </div>  
+                  <input
+                    type="text"
+                    value={editCategoriaNome}
+                    onChange={(e) => setEditCategoriaNome(e.target.value)}
+                  />
+                  <ButtonComIcon>
+                    <IoIosSave className="icon" />
+                  </ButtonComIcon>
+                  <ButtonComIcon onClick={cancelEditCategoria}>
+                    <MdCancel className="icon" />
+                  </ButtonComIcon>
+                </div>
               </form>
+            ) : (
               /*  <form onSubmit={handleSubmit(onSubmit)} className="form">
                  <div className="inputSelect">
                    <input type="text"
@@ -204,23 +318,29 @@ const FormCategoria = ({ handleSubmit, onSubmit, register, deleteCategoria, isLo
                    <ButtonAdd />
                  </div>
                </form> */
-            ) : (
               <>
-                <div className="tipo" onClick={() => openEditCategoria(categoria)}>
+                <div
+                  className="tipo"
+                  onClick={() => openEditCategoria(categoria)}
+                >
                   <p>{categoria.nome}</p>
                 </div>
+                {categoria.ativo === 1 ? (
+                  <ButtonAtivo
+                    onClick={() => handleSituacao(categoria)}
+                  />
+                ) : (
+                  <ButtonInativo
+                    onClick={() => handleSituacao(categoria)}
+                  />
+                )}
                 <ButtonRemove onClick={() => deleteCategoria(categoria.id)} />
               </>
             )}
           </div>
-        ))
-      }
+        ))}
     </div>
   );
-}
+};
 
-
-export {
-  FormProduto,
-  FormCategoria,
-}   
+export { FormProduto, FormCategoria };
